@@ -1606,9 +1606,12 @@ static bool CheckRestartLoadingAtRoadStop(RoadVehicle *v)
 
 	StationID station_id = v->current_order.GetDestination();
 	VehicleOrderID next_order_idx = AdvanceOrderIndexDeferred(v, v->cur_implicit_order_index);
+	const Order *curr_order = &v->current_order;
 	const Order *next_order = v->GetOrder(next_order_idx);
+
 	FlushAdvanceOrderIndexDeferred(v, false);
 	if (next_order != nullptr && next_order->IsType(OT_GOTO_STATION) && next_order->GetDestination() == station_id &&
+			(curr_order->GetRoadVehTravelDirection() == next_order->GetRoadVehTravelDirection()) &&
 			!(next_order->GetNonStopType() & ONSF_NO_STOP_AT_DESTINATION_STATION) &&
 			IsInfraTileUsageAllowed(VEH_ROAD, v->owner, v->tile) &&
 			GetRoadStopType(v->tile) == (v->IsBus() ? ROADSTOP_BUS : ROADSTOP_TRUCK)) {
